@@ -320,9 +320,8 @@ Both phases rely on the solver's completeness (exact branch-and-bound with the g
 
 \subsection{The four-part verification stack}\label{sec:verify}
 
-Each optimality claim in Table~\ref{tab:results} is supported by four mutually independent mechanisms:
+The lower bound ($\dim\ge k^\ast$) rests on the two-phase ILP infeasibility certificate (phase A); the upper bound ($\dim\le k^\ast$), i.e.\ that the returned set of size $k^\ast$ is resolving, is re-verified by three mutually independent mechanisms:
 \begin{enumerate}[label=\textup{\arabic*.},leftmargin=6mm,itemsep=2pt]
-\item The two-phase ILP certificate of \S\ref{sec:computation} (this \emph{certifies} optimality).
 \item \textbf{BFS re-verification.} The extracted optimal set is re-verified resolving by pure all-pairs BFS on the bishop component (\texttt{bishop.py}), i.e.\ with no reliance on the $0/1/2$ shortcut of Lemma~\ref{lem:diameter}.
 \item \textbf{Rule-oracle cross-check.} The three rules of Theorem~\ref{thm:rules} are implemented directly (\texttt{structure.py}) and are checked for \emph{zero} disagreements with the direct-distance verdicts on all reported optimal sets --- 0 disagreements observed across all instances --- providing an independent structural consistency check.
 \item \textbf{Brute-force cross-check.} For all components with $n\le5$ the exact ILP optimum is additionally verified by exhaustive enumeration: no subset of size $\dim-1$ resolves, and the reported set of size $\dim$ resolves.
@@ -333,7 +332,7 @@ For every $n$ with $1\le n\le\nmaxverified$, the metric dimensions of the two co
 \end{theorem}
 
 \begin{remark}[Why not LP duality]
-The LP relaxation optimum of the set-cover ILP is far below the integer optimum, and the gap grows with $n$ (measured for $n\le12$: e.g.\ LP $6.5$ at $n=12$ where the integer optimum is $12$; the gap keeps growing through $n=12$ in the measurements). LP duality therefore provides no usable certificate, and the exactness of our lower bounds rests on integer infeasibility proofs.
+The LP relaxation optimum of the set-cover ILP is far below the integer optimum and the gap remains large across the measured range (e.g.\ LP $6.50$ vs.\ integer optimum $12$ at $n=12$; LP $6.33$ vs.\ $12$ at $n=11$). LP duality therefore provides no usable certificate, and the exactness of our lower bounds rests on integer infeasibility proofs.
 \end{remark}
 
 \begin{figure}[t]

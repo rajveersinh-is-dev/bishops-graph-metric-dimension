@@ -1,7 +1,7 @@
 # Evidence Ledger — bishops-graph-metric-dimension
 
 Project: *Exact metric dimension of the bishop colour components of the n×n board*.
-Author: Rajveersinh Vishal Pardeshi (Independent Researcher).
+Author: Rajveersinh Vishal Pardeshi.
 Ledger compiled and continuously updated on **2026-10-18** in one research session.
 
 Purpose: map **every factual claim** that enters the manuscript to the artifact
@@ -43,7 +43,7 @@ that verifies it. Status vocabulary:
 | Range | Status | Artifact / verification |
 |---|---|---|
 | n = 1 … 16, both components | COMPUTED (exact ILP; verified) | `results/dims_2_16.json` (committed, root commit); `benchmark_dimension` proves optimality via exact MILP with `mip_rel_gap=0` (HiGHS via scipy.optimize.milp) and *independently re-verifies* the returned set resolves (`src/bishop.py` raise on failure); brute-force cross-check n ≤ 5 in `tests/test_bishop.py: test_small_brute_force` |
-| n = 17 … 24, both components | PENDING — four parallel background jobs running since 2026-10-18 10:31:34 (PIDs 2124, 16776, 27424, 51756) writing `results/dims_17_19.json`, `dims_20_21.json`, `dims_22_23.json`, `dims_24.json` and logs `results/out_*.txt`. Manuscript table ranges and the Computational Theorem's range will include exactly the sizes that completed; the claim will be adjusted to the completed set if some sizes do not finish in session | file existence + JSON contents once written |
+| n = 17 … 24, both components | PENDING — single background job `python src\fast_verify.py 17 24 results\dims_17_24.json` (shell launched 2026-10-18, ~22 min per component at n=16; n=17+ expected slower). On clean completion: add `results\dims_17_24.json`, regenerate `tables_auto*.tex`/`fig_n9.tex` (nmaxverified extended to exactly the completed range), bump the Computational Theorem range, recompile, commit + push. If any size hits the 1800s/call time limit, keep nmaxverified at the last fully completed n and do not force it. | file existence + JSON contents once written |
 | Closed-form conjecture consistency (floor formulas per parity/case) for the full completed range | COMPUTED (regression) | `src/conjecture_check.py` — prints exact vs conjectured for every record in every `results/dims_*.json`; "ALL MATCH" required before "verified to n" can be said in the paper |
 | All reported optimal bases are genuine resolving sets | COMPUTED (independent verifier) | `tests/test_bishop.py: test_solution_resolves_all_reported` re-checks every basis in every `results/dims_*.json` via pure-BFS distances |
 | ILP formulation correctness (set cover over vertex pairs reproduces resolving-set optimum) | PROVED (standard equivalence, argued in paper's computational section) + brute force | `test_small_brute_force` for all components with n ≤ 5 |
@@ -84,8 +84,7 @@ Target class: **OUP journal with a verified no-mandatory-author-fee route** (sta
 2. Final scoop-check: re-run targeted literature searches ("bishop graph metric
    dimension", "diamond rook graph", "landmarks in queens' graphs" etc.) right
    before submission; documented failure to find prior exact results.
-3. Kuziak–Yero metric-dimension survey: verify title/journal before any citation
-   (else cite none — the paper can stand without it).
+3. Kuziak–Yero metric-dimension survey: DROPPED — not cited anywhere in the manuscript; the paper stands without it (no title/journal verification needed).
 4. Hostile internal review passes 1 and 2 documented in
    `research/hostile_review.md`; every objection answered or the manuscript
    adjusted.
