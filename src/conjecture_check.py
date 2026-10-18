@@ -33,7 +33,12 @@ def main() -> int:
     ok = True
     print(f"{'n':>3} {'comp':>5} {'exact':>5} {'conj':>5} {'ok':>3}")
     for path in sorted(RES.glob("dims_*.json")):
-        for rec in json.loads(path.read_text()):
+        data = json.loads(path.read_text())
+        if isinstance(data, dict):
+            recs = [{"n": int(key), **val} for key, val in data.items()]
+        else:
+            recs = data
+        for rec in recs:
             n = rec["n"]
             conj = conjectures(n)
             for comp in ("even", "odd"):
