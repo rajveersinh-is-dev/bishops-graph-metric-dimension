@@ -26,9 +26,10 @@ optimal resolving set reported in results/.
 from __future__ import annotations
 
 import itertools
-from dataclasses import dataclass
 
 from bishop import Cell
+
+
 
 
 def to_uv(cell: Cell, comp: str) -> tuple[int, int]:

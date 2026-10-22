@@ -19,30 +19,54 @@ the diameter-two lemma, proved in paper/ and machine-checked in tests).
 
 Run:  python src/fast_verify.py <lo> <hi> [results_file]
 """
+from __future__ import annotations
+
+from pathlib import Path
 import itertools
 import json
 import sys
 import time
-from pathlib import Path
 
-import numpy as np
+from bishop import bishop_components
 from scipy.optimize import Bounds, LinearConstraint, milp
 from scipy.sparse import csc_matrix
+import numpy as np
+
+
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from bishop import bishop_components, component_distances
 
 TIME_LIMIT = 1800  # seconds per ILP call
 
 
-def to_uv(cell, comp):
+def to_uv(cell, comp) -> tuple:
+    """To uv.
+    
+    Args:
+        cell:
+        comp:
+    
+    Returns:
+        tuple: Result of type tuple
+    
+    """
     r, c = cell.r, cell.c
     if comp == "even":
         return ((r - c) // 2, (r + c) // 2)
     return ((r - c - 1) // 2, (r + c - 1) // 2)
 
 
-def d_rook(x, y):
+def d_rook(x, y) -> int:
+    """D rook.
+    
+    Args:
+        x:
+        y:
+    
+    Returns:
+        int: Result of type int
+    
+    """
     if x == y:
         return 0
     if x[0] == y[0] or x[1] == y[1]:
@@ -50,7 +74,7 @@ def d_rook(x, y):
     return 2
 
 
-def build(verts):
+def build(verts) -> tuple:
     """Pair-resolver incidence as a dense 0/1 numpy array (m x nump)."""
     pairs = list(itertools.combinations(verts, 2))
     m, nump = len(verts), len(pairs)
@@ -62,7 +86,7 @@ def build(verts):
     return pairs, B
 
 
-def run_ilp(B, bound, minimize, note):
+def run_ilp(B, bound, minimize, note) -> tuple:
     """min 1'x  (or 0'x) s.t. B'x >= 1, x binary, sum x <= bound."""
     m, nump = B.shape
     c = np.ones(m) if minimize else np.zeros(m)
@@ -91,7 +115,17 @@ def run_ilp(B, bound, minimize, note):
     return status, size, chosen
 
 
-def verify_resolving(verts, chosen_idx):
+def verify_resolving(verts, chosen_idx) -> bool:
+    """Check whether resolving.
+    
+    Args:
+        verts:
+        chosen_idx:
+    
+    Returns:
+        bool: Result of type bool
+    
+    """
     S = [verts[i] for i in chosen_idx]
     for x, y in itertools.combinations(verts, 2):
         if all(d_rook(s, x) == d_rook(s, y) for s in S):
@@ -121,6 +155,18 @@ def lower_bound(n, edge):
 
 
 def solve_component(n, comp, edge, k_start):
+    """Solve component.
+    
+    Args:
+        n:
+        comp:
+        edge:
+        k_start:
+    
+    Returns:
+        The computed result
+    
+    """
     verts = [to_uv(c, comp) for c in bishop_components(n)[0 if comp == "even" else 1]]
     verts = sorted(set(verts))
     pairs, B = build(verts)
@@ -169,6 +215,9 @@ def solve_component(n, comp, edge, k_start):
 
 
 def main():
+    """Entry point — parse arguments and run the main computation.
+    
+    """
     lo, hi = int(sys.argv[1]), int(sys.argv[2])
     out_path = Path(sys.argv[3]) if len(sys.argv) > 3 else Path(__file__).resolve().parents[1] / "results" / f"dims_fast_{lo}_{hi}.json"
     data = json.loads(out_path.read_text()) if out_path.exists() else {}

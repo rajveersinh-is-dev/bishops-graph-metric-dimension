@@ -10,15 +10,24 @@ Conjectures (n = board side length):
 
 Run:  python src/conjecture_check.py      (uses every results/dims_*.json)
 """
+from pathlib import Path
 import json
 import math
 import sys
-from pathlib import Path
 
 RES = Path(__file__).resolve().parents[1] / "results"
 
 
 def conjectures(n: int):
+    """Conjectures.
+    
+    Args:
+        n:
+    
+    Returns:
+        dict: Result of type dict
+    
+    """
     if n % 2 == 0:
         return {
             "even": math.floor((7 * n - 8) / 6),
@@ -30,6 +39,12 @@ def conjectures(n: int):
 
 
 def main() -> int:
+    """Entry point — parse arguments and run the main computation.
+    
+    Returns:
+        The computed result
+    
+    """
     ok = True
     print(f"{'n':>3} {'comp':>5} {'exact':>5} {'conj':>5} {'ok':>3}")
     for path in sorted(RES.glob("dims_*.json")):

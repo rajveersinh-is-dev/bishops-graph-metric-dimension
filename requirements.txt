@@ -1,0 +1,6 @@
+__future__
+bishop
+conjecture_check
+numpy
+scipy
+structure
